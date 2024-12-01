@@ -32,12 +32,14 @@ class NpcRoutes(Blueprint):
                     'properties': {
                         'named': {'type': 'string'},
                         'role': {'type': 'string'},
+                        'picture': {'type': 'string'},
                         'personality': {'type': 'string'},
                         'inventory': {'type': 'string'},
                         'likes': {'type': 'string'},
                         'money': {'type': 'string'},
+                        'backstory': {'type': 'string'}
                     },
-                    'required': ['named', 'role', 'personality', 'inventory', 'likes', 'money']  # These fields are required
+                    'required': ['named', 'role', 'picture', 'personality', 'inventory', 'likes', 'money', 'backstory']  # These fields are required
                 }
             }
         ],
@@ -62,19 +64,23 @@ class NpcRoutes(Blueprint):
 
             named = request_data.get('named')
             role = request_data.get('role')
+            picture = request_data.get('picture')
             personality = request_data.get('personality')
             inventory = request_data.get('inventory')
             likes = request_data.get('likes')
             money = request_data.get('money')
+            backstory = request_data.get('backstory')
 
             # Validate the data using the schema
             try:
                 self.npc_schema.validate_named(named)
                 self.npc_schema.validate_role(role)
+                self.npc_schema.validate_picture(picture)
                 self.npc_schema.validate_personality(personality)
                 self.npc_schema.validate_inventory(inventory)
                 self.npc_schema.validate_likes(likes)
                 self.npc_schema.validate_money(money)
+                self.npc_schema.validate_backstory(backstory)
             except ValidationError as e:
                 return jsonify({'error': f'Invalid data: {e}'}), 400  # Return error if validation fails
 
@@ -82,10 +88,12 @@ class NpcRoutes(Blueprint):
             new_npc = {
                 'named': named,
                 'role': role,
+                'picture': picture,
                 'personality': personality,
                 'inventory': inventory,
                 'likes': likes,
                 'money': money,
+                'backstory': backstory
             }
             created_npc = self.npc_service.add_npc(new_npc)  # Add the npc to the database
             self.logger.info(f'New npc: {created_npc}')  # Log the new npc creation
@@ -105,19 +113,23 @@ class NpcRoutes(Blueprint):
 
             named = request_data.get('named')
             role = request_data.get('role')
+            picture = request_data.get('picture')
             personality = request_data.get('personality')
             inventory = request_data.get('inventory')
             likes = request_data.get('likes')
             money = request_data.get('money')
+            backstory = request_data.get('backstory')
 
             # Validate the data
             try:
                 self.npc_schema.validate_named(named)
                 self.npc_schema.validate_role(role)
+                self.npc_schema.validate_picture(picture)
                 self.npc_schema.validate_personality(personality)
                 self.npc_schema.validate_inventory(inventory)
                 self.npc_schema.validate_likes(likes)
                 self.npc_schema.validate_money(money)
+                self.npc_schema.validate_backstory(backstory)
             except ValidationError as e:
                 return jsonify({'error': f'Invalid data: {e}'}), 400  # Return error if validation fails
 
@@ -126,10 +138,12 @@ class NpcRoutes(Blueprint):
                 '_id': npc_id,
                 'named': named,
                 'role': role,
+                'picture': picture,
                 'personality': personality,
                 'inventory': inventory,
                 'likes': likes,
                 'money': money,
+                'backstory': backstory
             }
             updated_npc = self.npc_service.update_npc(npc_id, update_npc)  # Update the npc in the database
             if updated_npc:

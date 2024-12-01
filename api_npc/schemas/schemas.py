@@ -2,12 +2,14 @@ from marshmallow import fields, validates, ValidationError
 
 # This npc defines the fields we need to validate
 class NpcSchema:
-    named = fields.String(required=True)  # named of the npc, must be a string and is required
+    named = fields.String(required=True)  # Name of the npc, must be a string and is required
     role = fields.String(required=True)  # Npc role, must be a string and required
-    personality = fields.String(required=True)  # Hit Die (health), must be a string and required
+    picture = fields.String(required=True)  # Picture, must be a string and required
+    personality = fields.String(required=True)  # Personality, must be a string and required
     inventory = fields.String(required=True)  # Primary Ability, must be a string and required
-    likes = fields.String(required=True)  # Saving Throw Proficiencies, must be a string and required
-    money = fields.String(required=True)  # Armor and Weapon Proficiencies, must be a string and required
+    likes = fields.String(required=True)  # Likes, must be a string and required
+    money = fields.String(required=True)  # Money, must be a string and required
+    backstory = fields.String(required=True)  # Backstory, must be a string and required
     # extra = fields.String(required=False)  # Not using this right now, so it’s commented out
 
     # Validate the named: Make sure the named has at least 5 characters
@@ -21,6 +23,11 @@ class NpcSchema:
     def validate_role(self, value):
         if len(value) < 5:
             raise ValidationError('Role must be at least 5 characters long')
+    
+    @validates('picture')
+    def validate_picture(self, value):
+        if len(value) < 5:
+            raise ValidationError('Picture must be at least 5 characters long')
 
     # Validate the hit die: Make sure it's at least 2 characters long
     @validates('personality')
@@ -45,6 +52,11 @@ class NpcSchema:
     def validate_money(self, value):
         if len(value) < 5:
             raise ValidationError('Money must be at least 5 characters long')
+    
+    @validates('backstory')
+    def validate_backstory(self, value):
+        if len(value) < 5:
+            raise ValidationError('Backstory must be at least 5 characters long')
 
     # You can also add validation for the "extra" field later if needed
     # @validates('extra')
