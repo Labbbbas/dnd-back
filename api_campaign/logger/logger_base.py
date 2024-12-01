@@ -1,7 +1,7 @@
 import logging as log  # Import the logging module
 
 class Logger:
-    def __init__(self, log_file='bookshelf_api.log', level=log.INFO):
+    def __init__(self, log_file='campaign_api.log', level=log.INFO):
         # Initialize the Logger class with a log file and default log level
         log.basicConfig(
             level=level,  # Set the logging level
