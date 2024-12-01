@@ -22,6 +22,18 @@ class ClassRoutes(Blueprint):
 
     @swag_from({
         'tags': ['Classes'],  # API Documentation: Shows this route is for classes
+        'responses': {
+            200: {'description': 'List of classes'},
+            500: {'description': 'Internal server error'}
+        }
+    })
+    def get_classes(self):
+        # Get all classes from the database
+        classes = self.class_service.get_all_classes()
+        return jsonify(classes), 200  # Return the list of classes as JSON
+    
+    @swag_from({
+        'tags': ['Classes'],
         'parameters': [
             {
                 'name': 'body',
@@ -42,16 +54,11 @@ class ClassRoutes(Blueprint):
             }
         ],
         'responses': {
-            200: {'description': 'Class successfully created'},
+            201: {'description': 'Class successfully created'},
             400: {'description': 'Invalid data'},
             500: {'description': 'Internal server error'}
         }
     })
-    def get_classes(self):
-        # Get all classes from the database
-        classes = self.class_service.get_all_classes()
-        return jsonify(classes), 200  # Return the list of classes as JSON
-    
     def add_classes(self):
         # Add a new class
         try:
@@ -95,6 +102,41 @@ class ClassRoutes(Blueprint):
             self.logger.error(f'Error adding a new class to the database: {e}')
             return jsonify({'error': f'An error has occurred: {e}'}), 500  # Handle any errors
 
+    @swag_from({
+        'tags': ['Classes'],
+        'parameters': [
+            {
+                'name': 'class_id',
+                'in': 'path',
+                'required': True,
+                'type': 'integer',
+                'description': 'ID of the class to update'
+            },
+            {
+                'name': 'body',
+                'in': 'body',
+                'required': True,
+                'schema': {
+                    'type': 'object',
+                    'properties': {
+                        'role': {'type': 'string'},
+                        'description': {'type': 'string'},
+                        'hd': {'type': 'string'},
+                        'pa': {'type': 'string'},
+                        'stp': {'type': 'string'},
+                        'awp': {'type': 'string'},
+                    },
+                    'required': ['role', 'description', 'hd', 'pa', 'stp', 'awp']  # These fields are required
+                }
+            }
+        ],
+        'responses': {
+            200: {'description': 'Class successfully updated'},
+            400: {'description': 'Invalid data'},
+            404: {'description': 'Class not found'},
+            500: {'description': 'Internal server error'}
+        }
+    })
     def update_class(self, class_id):
         # Update an existing class
         try:
@@ -141,6 +183,23 @@ class ClassRoutes(Blueprint):
             self.logger.error(f'Error updating the class in the database: {e}')
             return jsonify({'error': f'Error updating the class in the database: {e}'}), 500  # Handle any errors
 
+    @swag_from({
+        'tags': ['Classes'],
+        'parameters': [
+            {
+                'name': 'class_id',
+                'in': 'path',
+                'required': True,
+                'type': 'integer',
+                'description': 'ID of the class to delete'
+            }
+        ],
+        'responses': {
+            200: {'description': 'Class successfully deleted'},
+            404: {'description': 'Class not found'},
+            500: {'description': 'Internal server error'}
+        }
+    })
     def delete_class(self, class_id):
         # Delete a class by its ID
         try:
@@ -155,6 +214,12 @@ class ClassRoutes(Blueprint):
             self.logger.error(f'Error deleting the class from the database: {e}')
             return jsonify({'error': f'Error deleting the class from the database: {e}'}), 500  # Handle any errors
         
+    @swag_from({
+        'tags': ['Health'],
+        'responses': {
+            200: {'description': 'Server is up'}
+        }
+    })
     def healthcheck(self):
         # Health check to verify the server is up
         return jsonify({'status': 'up'}), 200
