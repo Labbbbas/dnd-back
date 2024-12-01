@@ -20,15 +20,23 @@ class ClassService:
 
     def add_class(self, new_class):
         try:
-            # Find the class with the highest ID and set the new class ID to be the next one
-            max_id = self.db_conn.db.classes.find_one(sort=[('_id', -1)])['_id']
-            next_id = max_id + 1
-            new_class['_id'] = next_id  # Assign new ID to the class
-            self.db_conn.db.classes.insert_one(new_class)  # Add the new class to the database
-            return new_class  # Return the newly added class
+            # Try to get the highest ID in the collection
+            max_class = self.db_conn.db.classes.find_one(sort=[('_id', -1)])
+            # If a class exists, increment its ID by 1; otherwise, start from 1
+            next_id = max_class['_id'] + 1 if max_class else 1
+            # Assign the new ID to the class
+            new_class['_id'] = next_id  
+            # Insert the new class into the database
+            self.db_conn.db.classes.insert_one(new_class)
+            
+            # Return the newly added class
+            return new_class
+    
         except Exception as e:
             # If something goes wrong, log the error and return an error message
             self.logger.error(f'Error creating the new class: {e}')
+            
+            # Return a 500 error response with the error message
             return jsonify({'error': f'Error creating the new class: {e}'}), 500
 
     def get_class_by_id(self, class_id):
