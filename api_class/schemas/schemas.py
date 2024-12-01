@@ -1,4 +1,6 @@
 from marshmallow import fields, validates, ValidationError
+import re
+
 
 # This class defines the fields we need to validate
 class ClassSchema:
@@ -8,49 +10,76 @@ class ClassSchema:
     pa = fields.String(required=True)  # Primary Ability, must be a string and required
     stp = fields.String(required=True)  # Saving Throw Proficiencies, must be a string and required
     awp = fields.String(required=True)  # Armor and Weapon Proficiencies, must be a string and required
-    # extra = fields.String(required=False)  # Not using this right now, so it’s commented out
 
-    # Validate the role: Make sure the role has at least 5 characters
+
     @validates('role')
     def validate_role(self, value):
-        if len(value) < 5:
-            raise ValidationError('Class must be at least 5 characters long')
+        # Remove leading and trailing spaces
+        value = value.strip()
+        
+        # Check if the field is empty
+        if not value:
+            raise ValidationError('Class is required.')
+        
+        # Check if the value contains only letters (no numbers or special characters)
+        if not re.match('^[A-Za-z]+$', value):
+            raise ValidationError('Class must contain only letters.')
+        
 
-    # Validate the description: Make sure the description has at least 5 characters
     @validates('description')
     def validate_description(self, value):
-        if len(value) < 5:
-            raise ValidationError('Description must be at least 5 characters long')
+        # Check if the field is empty
+        if not value:
+            raise ValidationError('Description is required.')
+        
+        # Check if the length is no more than 250 characters
+        elif len(value) > 250:
+            raise ValidationError('Description must be no longer than 250 characters.')
 
-    # Validate the hit die: Make sure it's at least 2 characters long
+        # Check if the value contains only letters, spaces, and common punctuation (, . ' -)
+        if not re.match('^[A-Za-z\s,.\'-]+$', value):
+            raise ValidationError('Description must contain only letters, spaces, and common punctuation.')
+        
+
     @validates('hd')
     def validate_hd(self, value):
-        if len(value) < 2:
-            raise ValidationError('Hit Die must be at least 2 characters long')
+        # Check if the field is empty
+        if not value:
+            raise ValidationError('Hit Die is required.')
+        
 
-    # Validate the primary ability: Make sure it’s at least 5 characters long
     @validates('pa')
     def validate_pa(self, value):
-        if len(value) < 5:
-            raise ValidationError('Primary Ability must be at least 5 characters long')
+        # Check if the field is empty
+        if not value:
+            raise ValidationError('Primary Ability is required.')
+        
 
-    # Validate saving throw proficiencies: Make sure it’s at least 5 characters long
     @validates('stp')
     def validate_stp(self, value):
-        if len(value) < 5:
-            raise ValidationError('Saving Throw Proficiencies must be at least 5 characters long')
+        # Check if the field is empty
+        if not value:
+            raise ValidationError('Saving Throw Proficiencies is required.')
+        
+        # Check if the field always contains two elements separated by a comma
+        elif value.count(',') != 1:
+            raise ValidationError('Saving Throw Proficiencies must always have exactly two selections.')
+        
 
-    # Validate armor and weapon proficiencies: Make sure it’s at least 5 characters long
     @validates('awp')
     def validate_awp(self, value):
-        if len(value) < 5:
-            raise ValidationError('Armor and Weapon Proficiencies must be at least 5 characters long')
+        # Check if the field is empty
+        if not value:
+            raise ValidationError('Armor and Weapon Proficiencies is required.')
 
-    # You can also add validation for the "extra" field later if needed
-    # @validates('extra')
-    # def validate_extra(self, value):
-    #     if len(value) > 256:
-    #         raise ValidationError('Extra must be at max 256 characters long')
+        # Check if the length is no more than 200 characters
+        elif len(value) > 200:
+            raise ValidationError('Armor and Weapon Proficiencies must be no longer than 200 characters.')
+
+        # Check if the value contains only letters, spaces, commas, periods, and parentheses
+        if not re.match('^[A-Za-z\s,.\(\)]+$', value):
+            raise ValidationError('Armor and Weapon Proficiencies must contain only letters, spaces, commas, periods, and parentheses.')
+
 
 # Main part of the code that runs when the script is executed
 if __name__ == '__main__':
