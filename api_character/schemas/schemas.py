@@ -111,6 +111,17 @@ class CharacterSchema:
         # Check if the length of the player name is 50 characters or fewer
         if len(value) > 50:
             raise ValidationError('Player name must be 50 characters or fewer.')
+    
+    @validates('picture')
+    def validate_picture(self, value):
+        # Check if the picture is empty after stripping spaces
+        if not value:
+            raise ValidationError('Picture is required.')
+        
+        # Check if the picture is a valid URL
+        url_pattern = re.compile(r'https?://\S+')
+        if not url_pattern.match(value):
+            raise ValidationError('Picture must be a valid URL.')
 
 
 # Main part of the code that runs when the script is executed

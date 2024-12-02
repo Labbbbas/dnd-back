@@ -49,8 +49,9 @@ class CharacterRoutes(Blueprint):
                         'level': {'type': 'string'},
                         'background': {'type': 'string'},
                         'playerName': {'type': 'string'},
+                        'picture': {'type': 'string'}
                     },
-                    'required': ['characterName', 'race', 'className', 'alignment', 'level', 'background', 'playerName']  # These fields are required
+                    'required': ['characterName', 'race', 'className', 'alignment', 'level', 'background', 'playerName', 'picture']  # These fields are required
                 }
             }
         ],
@@ -75,6 +76,7 @@ class CharacterRoutes(Blueprint):
             level = request_data.get('level')
             background = request_data.get('background')
             playerName = request_data.get('playerName')
+            picture = request_data.get('picture')
 
             # Validate the data using the schema
             try:
@@ -85,6 +87,7 @@ class CharacterRoutes(Blueprint):
                 self.character_schema.validate_level(level)
                 self.character_schema.validate_background(background)
                 self.character_schema.validate_playerName(playerName)
+                self.character_schema.validate_picture(picture)
             except ValidationError as e:
                 return jsonify({'error': f'Invalid data: {e}'}), 400  # Return error if validation fails
 
@@ -97,6 +100,7 @@ class CharacterRoutes(Blueprint):
                 'level': level,
                 'background': background,
                 'playerName': playerName,
+                'picture': picture,
             }
             created_character = self.character_service.add_character(new_character)  # Add the character to the database
             self.logger.info(f'New character: {created_character}')  # Log the new character creation
@@ -130,8 +134,9 @@ class CharacterRoutes(Blueprint):
                         'level': {'type': 'string'},
                         'background': {'type': 'string'},
                         'playerName': {'type': 'string'},
+                        'picture': {'type': 'string'}
                     },
-                    'required': ['characterName', 'race', 'className', 'alignment', 'level', 'background', 'playerName']  # These fields are required
+                    'required': ['characterName', 'race', 'className', 'alignment', 'level', 'background', 'playerName', 'picture']  # These fields are required
                 }
             }
         ],
@@ -157,6 +162,7 @@ class CharacterRoutes(Blueprint):
             level = request_data.get('level')
             background = request_data.get('background')
             playerName = request_data.get('playerName')
+            picture = request_data.get('picture')
 
             # Validate the data
             try:
@@ -167,6 +173,7 @@ class CharacterRoutes(Blueprint):
                 self.character_schema.validate_level(level)
                 self.character_schema.validate_background(background)
                 self.character_schema.validate_playerName(playerName)
+                self.character_schema.validate_picture(picture)
             except ValidationError as e:
                 return jsonify({'error': f'Invalid data: {e}'}), 400  # Return error if validation fails
 
@@ -180,6 +187,7 @@ class CharacterRoutes(Blueprint):
                 'level': level,
                 'background': background,
                 'playerName': playerName,
+                'picture': picture
             }
             updated_character = self.character_service.update_character(character_id, update_character)  # Update the character in the database
             if updated_character:
