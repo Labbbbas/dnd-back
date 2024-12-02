@@ -1,30 +1,31 @@
-from marshmallow import fields, validates, ValidationError
+from marshmallow import Schema, fields, validates, ValidationError
 import re
 from datetime import datetime
 
 # This campaign defines the fields we need to validate
-class CampaignSchema:
-    name = fields.String(required=True)         # Name of the campaign, must be a string and is required
+class CampaignSchema (Schema):
+    title = fields.String(required=True)         # title of the campaign, must be a string and is required
     description = fields.String(required=True)  # Campaign description, must be a string and required
     dm = fields.String(required=True)           # Dungeon Master, must be a string and required
     status = fields.String(required=True)       # Status, must be a string and required
-    pc = fields.String(required=True)           # Player Characters, must be a string and is required
+    # array of player characters, must be their names
+    pc = fields.Nested(fields.String(), required=True)  # Player Characters, must be a string and required
     startDate = fields.String(required=True)    # Start Date, must be a string and required
     endDate = fields.String(required=True)      # End Date, must be a string and required
     ql = fields.String(required=True)           # Quest Log, must be a string and is required
     
-    @validates('name')
-    def validate_name(self, value):
+    @validates('title')
+    def validate_title(self, value):
         # Remove leading and trailing spaces
         value = value.strip()
         
         # Check if the field is empty
         if not value:
-            raise ValidationError('Campaign name is required.')
+            raise ValidationError('Campaign title is required.')
         
         # Check if the value contains only letters (no numbers or special characters)
         if not re.match('^[A-Za-z]+$', value):
-            raise ValidationError('Campaign name must contain only letters.')
+            raise ValidationError('Campaign title must contain only letters.')
 
     @validates('description')
     def validate_description(self, value):

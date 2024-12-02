@@ -7,7 +7,7 @@ from flasgger import swag_from
 
 class CampaignsRoutes(Blueprint):
     def __init__(self, campaign_service, campaign_schema):
-        super().__init__('class', __name__)  # Initialize the Blueprint
+        super().__init__('campaign', __name__)  # Initialize the Blueprint
         self.campaign_service = campaign_service  # Service to handle database operations
         self.campaign_schema = campaign_schema  # Schema to validate the campaign data
         self.register_routes()  # Register the routes (endpoints)
@@ -16,9 +16,9 @@ class CampaignsRoutes(Blueprint):
     def register_routes(self):
         # Register the HTTP routes for the campaign API
         self.route('/api/v1/campaigns', methods=['GET'])(self.get_campaigns)
-        self.route('/api/v1/campaigns', methods=['POST'])(self.add_campaigns)
-        self.route('/api/v1/campaigns/<int:clampaign_id>', methods=['PUT'])(self.update_class)
-        self.route('/api/v1/campaigns/<int:clampaign_id>', methods=['DELETE'])(self.delete_class)
+        self.route('/api/v1/campaigns', methods=['POST'])(self.add_campaign)
+        self.route('/api/v1/campaigns/<int:campaign_id>', methods=['PUT'])(self.update_campaign)
+        self.route('/api/v1/campaigns/<int:campaign_id>', methods=['DELETE'])(self.delete_campaign)
         self.route('/healthcheck', methods=['GET'])(self.healthcheck)
         
     @swag_from({
@@ -29,7 +29,7 @@ class CampaignsRoutes(Blueprint):
         }
     })
     
-    def get_classes(self):
+    def get_campaigns(self):
         # Get all campaigns from the database
         campaigns = self.campaign_service.get_all_campaigns()
         return jsonify(campaigns), 200  # Return the list of campaigns as JSON
