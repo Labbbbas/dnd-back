@@ -42,16 +42,17 @@ class BossRoutes(Blueprint):
                 'schema': {
                     'type': 'object',
                     'properties': {
-                        'name': {'type': 'string'},
-                        'type': {'type': 'string'},
+                        'named': {'type': 'string'},
+                        'typed': {'type': 'string'},
                         'cr': {'type': 'string'},
                         'hp': {'type': 'string'},
                         'ac': {'type': 'string'},
                         'resistances': {'type': 'string'},
                         'inmunities': {'type': 'string'},
                         'abilities': {'type': 'string'},
+                        'picture': {'type': 'string'},
                     },
-                    'required': ['name', 'type', 'cr', 'hp', 'ac', 'resistances', "inmunities", "abilities"]  # These fields are required
+                    'required': ['named', 'typed', 'cr', 'hp', 'ac', 'resistances', "inmunities", "abilities", "picture"]  # These fields are required
                 }
             }
         ],
@@ -69,40 +70,43 @@ class BossRoutes(Blueprint):
             if not request_data:
                 return jsonify({'error': 'Invalid data, empty'}), 400  # Check if data is empty
 
-            name = request_data.get('name')
-            type = request_data.get('type')
+            named = request_data.get('named')
+            typed = request_data.get('typed')
             cr = request_data.get('cr')
             hp = request_data.get('hp')
             ac = request_data.get('ac')
             resistances = request_data.get('resistances')
             immunities = request_data.get('immunities')
             abilities = request_data.get('abilities')
+            picture = request_data.get('picture')
 
 
             # Validate the data using the schema
             try:
-                self.boss_schema.validate_name(name)
-                self.boss_schema.validate_type(type)
+                self.boss_schema.validate_named(named)
+                self.boss_schema.validate_typed(typed)
                 self.boss_schema.validate_cr(cr)
                 self.boss_schema.validate_hp(hp)
                 self.boss_schema.validate_ac(ac)
                 self.boss_schema.validate_resistances(resistances)
                 self.boss_schema.validate_immunities(immunities)
                 self.boss_schema.validate_abilities(abilities)
+                self.boss_schema.validate_picture(picture)
 
             except ValidationError as e:
                 return jsonify({'error': f'Invalid data: {e}'}), 400  # Return error if validation fails
 
             # Create the new boss object
             new_boss = {
-                'name': name,
-                'type' : type,
+                'named': named,
+                'typed' : typed,
                 'cr' : cr,
                 'hp' : hp,
                 'ac' : ac,
                 'resistances' : resistances,
                 'immunities' : immunities,
                 'abilities' : abilities,
+                'picture' : picture
             }
             created_boss = self.boss_service.add_boss(new_boss)  # Add the boss to the database
             self.logger.info(f'New boss: {created_boss}')  # Log the new boss creation
@@ -129,16 +133,17 @@ class BossRoutes(Blueprint):
                 'schema': {
                     'type': 'object',
                     'properties': {
-                        'name': {'type': 'string'},
-                        'type': {'type': 'string'},
+                        'named': {'type': 'string'},
+                        'typed': {'type': 'string'},
                         'cr': {'type': 'string'},
                         'hp': {'type': 'string'},
                         'ac': {'type': 'string'},
                         'resistances': {'type': 'string'},
                         'inmunities': {'type': 'string'},
                         'abilities': {'type': 'string'},
+                        'picture': {'type': 'string'},
                     },
-                    'required': ['name', 'type', 'cr', 'hp', 'ac', 'resistances', "inmunities", "abilities"]  # These fields are required
+                    'required': ['named', 'typed', 'cr', 'hp', 'ac', 'resistances', "inmunities", "abilities", "picture"]  # These fields are required
                 }
             }
         ],
@@ -157,40 +162,43 @@ class BossRoutes(Blueprint):
             if not request_data:
                 return jsonify({'error': 'Invalid data, empty'}), 400  # Check if data is empty
 
-            name = request_data.get('name')
-            type = request_data.get('type')
+            named = request_data.get('named')
+            typed = request_data.get('typed')
             cr = request_data.get('cr')
             hp = request_data.get('hp')
             ac = request_data.get('ac')
             resistances = request_data.get('resistances')
             immunities = request_data.get('immunities')
             abilities = request_data.get('abilities')
+            picture = request_data.get('picture')
 
 
             # Validate the data using the schema
             try:
-                self.boss_schema.validate_name(name)
-                self.boss_schema.validate_type(type)
+                self.boss_schema.validate_named(named)
+                self.boss_schema.validate_typed(typed)
                 self.boss_schema.validate_cr(cr)
                 self.boss_schema.validate_hp(hp)
                 self.boss_schema.validate_ac(ac)
                 self.boss_schema.validate_resistances(resistances)
                 self.boss_schema.validate_immunities(immunities)
                 self.boss_schema.validate_abilities(abilities)
+                self.boss_schema.validate_picture(picture)
             except ValidationError as e:
                 return jsonify({'error': f'Invalid data: {e}'}), 400  # Return error if validation fails
 
             # Update the boss object
             update_boss = {
                 '_id' : boss_id,
-                'name': name,
-                'type' : type,
+                'named': name,
+                'typed' : typed,
                 'cr' : cr,
                 'hp' : hp,
                 'ac' : ac,
                 'resistances' : resistances,
                 'immunities' : immunities,
                 'abilities' : abilities,
+                'picture' : picture
             }
             updated_boss = self.boss_service.update_boss(boss_id, update_boss)  # Update the boss in the database
             if updated_boss:
