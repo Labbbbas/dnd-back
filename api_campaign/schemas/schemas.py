@@ -38,7 +38,7 @@ class CampaignSchema (Schema):
             raise ValidationError('Description must be no longer than 250 characters.')
 
         # Check if the value contains only letters, spaces, and common punctuation (, . ' -)
-        if not re.match('^[A-Za-z\s,.\'-]+$', value):
+        if not re.match('^[A-Za-z\\s,.\'-]+$', value):
             raise ValidationError('Description must contain only letters, spaces, and common punctuation.')
 
     @validates('dm')
@@ -52,7 +52,7 @@ class CampaignSchema (Schema):
             raise ValidationError('Dungeon Master must be no longer than 200 characters.')
 
         # Check if the value contains only letters, spaces, and common punctuation (, . ' -)
-        if not re.match('^[A-Za-z\s,.\'-]+$', value):
+        if not re.match('^[A-Za-z\\s,.\'-]+$', value):
             raise ValidationError('Dungeon Master must contain only letters, spaces, and common punctuation.')
 
     @validates('status')
@@ -120,7 +120,7 @@ class CampaignSchema (Schema):
             raise ValidationError('Quest Log must be no longer than 200 characters.') """
 
         # Check if the value contains only letters, spaces, commas, periods, and parentheses
-        if not re.match('^[A-Za-z\s,.\(\)]+$', value):
+        if not re.match('^[A-Za-z\\s,.\(\)]+$', value):
             raise ValidationError('Quest Log must contain only letters, spaces, commas, periods, and parentheses.')
 
 # Main part of the code that runs when the script is executed

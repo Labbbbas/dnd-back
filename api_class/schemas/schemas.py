@@ -37,7 +37,7 @@ class ClassSchema:
             raise ValidationError('Description must be no longer than 250 characters.')
 
         # Check if the value contains only letters, spaces, and common punctuation (, . ' -)
-        if not re.match('^[A-Za-z\s,.\'-]+$', value):
+        if not re.match('^[A-Za-z\\s,.\'-]+$', value):
             raise ValidationError('Description must contain only letters, spaces, and common punctuation.')
         
 
@@ -77,7 +77,7 @@ class ClassSchema:
             raise ValidationError('Armor and Weapon Proficiencies must be no longer than 200 characters.')
 
         # Check if the value contains only letters, spaces, commas, periods, and parentheses
-        if not re.match('^[A-Za-z\s,.\(\)]+$', value):
+        if not re.match('^[A-Za-z\\s,.\(\)]+$', value):
             raise ValidationError('Armor and Weapon Proficiencies must contain only letters, spaces, commas, periods, and parentheses.')
 
 
