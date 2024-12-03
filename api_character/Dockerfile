@@ -12,6 +12,8 @@ RUN apk update && \
     pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir gunicorn Flask flask-cors pymongo marshmallow flasgger
 
+RUN touch /app/character_api.log && chmod 666 /app/character_api.log && chown app:app /app/character_api.log
+
 EXPOSE 8002
 
 # || se va a ejecutar la siguiente instrucción sólo si la anterior NO fue correcta

@@ -34,7 +34,7 @@ app.register_blueprint(character_routes)  # Register the routes with the Flask a
 if __name__ == '__main__':
     try:
         # Run the app in debug mode for development
-        app.run(debug=True)
+        app.run(debug=True, host='0.0.0.0', port=8002)
     finally:
         # Close the database connection when the app stops
         db_conn.close_connection()
