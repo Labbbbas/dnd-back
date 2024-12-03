@@ -19,4 +19,4 @@ HEALTHCHECK CMD curl --fail http://localhost:8002/healthcheck || exit 1
 
 USER app
 
-ENTRYPOINT [ "gunicorn", "--bind", "0.0.0.0:8000", "-w 4", "app:app" ]
+ENTRYPOINT [ "gunicorn", "--bind", "0.0.0.0:8002", "-w 4", "app:app" ]
