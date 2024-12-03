@@ -12,10 +12,10 @@ RUN apk update && \
     pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir gunicorn Flask flask-cors pymongo marshmallow flasgger
 
-EXPOSE 8004
+EXPOSE 8000
 
 # || se va a ejecutar la siguiente instrucción sólo si la anterior NO fue correcta
-HEALTHCHECK CMD curl --fail http://localhost:8004/healthcheck || exit 1
+HEALTHCHECK CMD curl --fail http://localhost:8000/healthcheck || exit 1
 
 USER app
 
