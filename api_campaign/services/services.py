@@ -18,7 +18,7 @@ class CampaignService:
             self.logger.error(f'Error fetching all campaigns from the database: {e}')
             return jsonify({'error': f'Error fetching all campaigns from the database: {e}'}), 500
 
-    def add_campaigns(self, new_campaign):
+    def add_campaign(self, new_campaign):
         try:
             # Try to get the highest ID in the collection
             max_campaigns = self.db_conn.db.campaigns.find_one(sort=[('_id', -1)])

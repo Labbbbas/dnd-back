@@ -13,16 +13,16 @@ class CampaignSchema (Schema):
     startDate = fields.String(required=True)    # Start Date, must be a string and required
     endDate = fields.String(required=True)      # End Date, must be a string and required
     ql = fields.String(required=True)           # Quest Log, must be a string and is required
-    
+
     @validates('title')
     def validate_title(self, value):
         # Remove leading and trailing spaces
         value = value.strip()
-        
+
         # Check if the field is empty
         if not value:
             raise ValidationError('Campaign title is required.')
-        
+
         # Check if the value contains only letters (no numbers or special characters)
         if not re.match('^[A-Za-z]+$', value):
             raise ValidationError('Campaign title must contain only letters.')
@@ -32,7 +32,7 @@ class CampaignSchema (Schema):
         # Check if the field is empty
         if not value:
             raise ValidationError('Description is required.')
-        
+
         # Check if the length is no more than 250 characters
         elif len(value) > 250:
             raise ValidationError('Description must be no longer than 250 characters.')
@@ -40,13 +40,13 @@ class CampaignSchema (Schema):
         # Check if the value contains only letters, spaces, and common punctuation (, . ' -)
         if not re.match('^[A-Za-z\s,.\'-]+$', value):
             raise ValidationError('Description must contain only letters, spaces, and common punctuation.')
-        
+
     @validates('dm')
     def validate_dm(self, value):
         # Check if the field is empty
         if not value:
             raise ValidationError('Dungeon Master is required.')
-        
+
         # Check if the length is no more than 250 characters
         elif len(value) > 200:
             raise ValidationError('Dungeon Master must be no longer than 200 characters.')
@@ -60,36 +60,32 @@ class CampaignSchema (Schema):
         # Check if the field is empty
         if not value:
             raise ValidationError('Status is required.')
-        
+
     @validates('pc')
     def validate_pc(self, value):
         # Check if the field is empty
         if not value:
             raise ValidationError('Player Characters is required.')
-        
+
         # Split the value by commas to check how many characters are selected
-        characters = value.split(',')
-        
+        # characters = value.split(',')
+
         # Check if the field always contains two elements separated by a comma
-        if len(characters) < 2:
+        if len(value) < 2:
             raise ValidationError('Player Characters must always have two or more selections.')
-    
+
     @validates('startDate')
     def validate_startDate(self, value):
         # Check if the field is empty
         if not value:
             raise ValidationError('Start Date is required.')
 
-        # Check if the value is a valid date
+        # Check if the value is a valid date (assuming format MM-DD-YYYY)
         try:
-            # Try to parse the value as a date (assuming the format is 'YYYY-MM-DD')
-            start_date = datetime.strptime(value, '%Y-%m-%d')
+            # Try to parse the value as a date (MM-DD-YYYY)
+            start_date = datetime.strptime(value, "%m-%d-%Y")
         except ValueError:
-            raise ValidationError('Invalid date format. Use YYYY-MM-DD.')
-
-        # Check if the start date is not in the past (optional)
-        if start_date < datetime.now():
-            raise ValidationError('Start Date cannot be in the past.')
+            raise ValidationError('Invalid start date format. Use MM-DD-YYYY.')
 
     @validates('endDate')
     def validate_endDate(self, value):
@@ -97,21 +93,22 @@ class CampaignSchema (Schema):
         if not value:
             raise ValidationError('End Date is required.')
 
-        # Check if the value is a valid date (assumes format 'YYYY-MM-DD')
+        # Check if the value is a valid date (assuming format MM-DD-YYYY)
         try:
-            # Try to parse the value as a date (YYYY-MM-DD)
-            end_date = datetime.strptime(value, '%Y-%m-%d')
+            # Try to parse the value as a date (MM-DD-YYYY)
+            end_date = datetime.strptime(value, '%m-%d-%Y')
         except ValueError:
-            raise ValidationError('Invalid date format. Use YYYY-MM-DD.')
+            raise ValidationError('Invalid end date format. Use MM-DD-YYYY.')
 
-        # Check if the end date is not before the start date
-        if end_date < self.startDate:  # Assumes startDate is already a datetime object
-            raise ValidationError('End Date cannot be earlier than Start Date.')
+        # Ensure startDate exists (i.e., the campaign has a start date)
+        if hasattr(self, 'startDate') and self.startDate:
+            # Convert startDate to datetime for comparison
+            start_date = datetime.strptime(self.startDate, '%m-%d-%Y')
 
-        # Check if the end date is not in the past
-        if end_date < datetime.today():
-            raise ValidationError('End Date cannot be in the past.')
-        
+            # Check if the end date is not before the start date
+            if end_date < start_date:  # Direct comparison of startDate and endDate
+                raise ValidationError('End Date cannot be earlier than Start Date.')
+
     @validates('ql')
     def validate_ql(self, value):
         # Check if the field is empty
@@ -119,8 +116,8 @@ class CampaignSchema (Schema):
             raise ValidationError('Quest Log is required.')
 
         # Check if the length is no more than 200 characters
-        elif len(value) > 200:
-            raise ValidationError('Quest Log must be no longer than 200 characters.')
+        """ elif len(value) > 200:
+            raise ValidationError('Quest Log must be no longer than 200 characters.') """
 
         # Check if the value contains only letters, spaces, commas, periods, and parentheses
         if not re.match('^[A-Za-z\s,.\(\)]+$', value):
