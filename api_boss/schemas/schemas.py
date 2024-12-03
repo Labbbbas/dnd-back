@@ -1,117 +1,74 @@
 from marshmallow import fields, validates, ValidationError
-import re
 
-
-# This class defines the fields we need to validate
+# This boss defines the fields we need to validate
 class BossSchema:
-    named = fields.String(required=True)  # Name of the Boss, must be a string and is required
-    typed = fields.String(required=True)  # Type typed, must be a string and required
-    cr = fields.String(required=True)  # CR, must be a string and required
-    hp = fields.String(required=True)  # HP, must be a string and required
-    ac = fields.String(required=True)  # Saving AC, must be a string and required
-    resistances = fields.String(required=True)  # RESISTANCES, must be a string and required
-    inmunities = fields.String(required=True)  # INMUNITIES , must be a string and required
-    abilities = fields.String(required=True)  # ABILITIES , must be a string and required
+    named = fields.String(required=True)  # Name of the boss, must be a string and is required
+    typed = fields.String(required=True)  # Boss type, must be a string and required
+    picture = fields.String(required=True)  # Picture, must be a string and required
+    cr = fields.String(required=True)  # Challenge Rating, must be a string and required
+    hp = fields.String(required=True)  # Primary Ability, must be a string and required
+    ac = fields.String(required=True)  # Armor Class, must be a string and required
+    resistances = fields.String(required=True)  # resistances, must be a string and required
+    immunities = fields.String(required=True)  # Immunities, must be a string and required
+    abilities = fields.String(required=True)  # Abilities, must be a string and required
+    # extra = fields.String(required=False)  # Not using this right now, so it’s commented out
 
-
+    # Validate the named: Make sure the named has at least 5 characters
     @validates('named')
     def validate_named(self, value):
-        # Remove leading and trailing spaces
-        value = value.strip()
-        
-        # Check if the field is empty
-        if not value:
-            raise ValidationError('Boss is required.')
-        
-        # Check if the value contains only letters (no numbers or special characters)
-        if not re.match('^[A-Za-z]+$', value):
-            raise ValidationError('Boss must contain only letters.')
-        
+        if len(value) < 1:
+            raise ValidationError('Name must not be empty')
 
+    # Validate the type: Make sure the type has at least 5 characters
     @validates('typed')
     def validate_typed(self, value):
-        # Check if the field is empty
-        if not value:
-            raise ValidationError('Type is required.')
-        
-        # Check if the length is no more than 250 characters
-        elif len(value) > 50:
-            raise ValidationError('Type must be no longer than 50 characters.')
-
-        # Check if the value contains only letters, spaces, and common punctuation (, . ' -)
-        if not re.match('^[A-Za-z\s,.\'-]+$', value):
-            raise ValidationError('Type must contain only letters, spaces, and common punctuation.')
-        
-
-    @validates('cr')
-    def validate_cr(self, value):
-        # Check if the field is empty
-        if not value:
-            raise ValidationError('Challenge Rating is required.')
-        
-
-    @validates('hp')
-    def validate_hp(self, value):
-        # Check if the field is empty
-        if not value:
-            raise ValidationError('Hit Points are required.')
-        
-
-    @validates('ac')
-    def validate_ac(self, value):
-        # Check if the field is empty
-        if not value:
-            raise ValidationError('Armor Class is required.')
-        
-        # Check if the field always contains two elements separated by a comma
-        elif value.count(',') != 1:
-            raise ValidationError('Armor Class must always have exactly two selections.')
-        
-
-    @validates('resistances')
-    def validate_resistances(self, value):
-        # Check if the field is empty
-        if not value:
-            raise ValidationError('Resistances are required.')
-
-        # Check if the length is no more than 200 characters
-        elif len(value) > 100:
-            raise ValidationError('Resistances must be no longer than 100 characters.')
-
-        # Check if the value contains only letters, spaces, commas, periods, and parentheses
-        if not re.match('^[A-Za-z\s,.\(\)]+$', value):
-            raise ValidationError('Resistances must contain only letters, spaces, commas, periods, and parentheses.')
+        if len(value) < 1:
+            raise ValidationError('Type must not be empty')
     
-    @validates('inmunities')
-    def validate_inmunities(self, value):
-        # Check if the field is empty
-        if not value:
-            raise ValidationError('Inmunities are required.')
-
-    @validates('abilities')
-    def validate_abilities(self, value):
-        # Check if the field is empty
-        if not value:
-            raise ValidationError('Abilities are required.')
-
-        # Check if the length is no more than 200 characters
-        elif len(value) > 100:
-            raise ValidationError('Abilities must be no longer than 100 characters.')
-
-        # Check if the value contains only letters, spaces, commas, periods, and parentheses
-        if not re.match('^[A-Za-z\s,.\(\)]+$', value):
-            raise ValidationError('Abilities must contain only letters, spaces, commas, periods, and parentheses.')
-
     @validates('picture')
     def validate_picture(self, value):
-        # Check if the field is empty
-        if not value:
-            raise ValidationError('Picture is required.')
-        
-        # Check if the value contains only letters, numbers, and common punctuation (, . ' -)
-        if not re.match('^[A-Za-z0-9\s,.\'-]+$', value):
-            raise ValidationError('Picture must contain only letters, numbers, spaces, and common punctuation.')
+        if len(value) < 5:
+            raise ValidationError('Picture URL is too short')
 
+    # Validate the hit die: Make sure it's at least 2 characters long
+    @validates('cr')
+    def validate_cr(self, value):
+        if len(value) < 1:
+            raise ValidationError('Challenge Rating must not be empty')
+
+    # Validate the primary ability: Make sure it’s at least 5 characters long
+    @validates('hp')
+    def validate_hp(self, value):
+        if len(value) < 1:
+            raise ValidationError('Hit points must not be empty')
+
+    # Validate saving throw proficiencies: Make sure it’s at least 5 characters long
+    @validates('ac')
+    def validate_ac(self, value):
+        if len(value) < 1:
+            raise ValidationError('Armor Class must not be empty')
+
+    # Validate armor and weapon proficiencies: Make sure it’s at least 5 characters long
+    @validates('resistances')
+    def validate_resistances(self, value):
+        if len(value) < 1:
+            raise ValidationError('Resistances must not be empty')
+    
+    @validates('immunities')
+    def validate_immunities(self, value):
+        if len(value) < 1:
+            raise ValidationError('Immunities must not be empty')
+    
+    @validates('abilities')
+    def validate_abilities(self, value):
+        if len(value) < 1:
+            raise ValidationError('Abilities must not be empty')
+
+    # You can also add validation for the "extra" field later if needed
+    # @validates('extra')
+    # def validate_extra(self, value):
+    #     if len(value) > 256:
+    #         raise ValidationError('Extra must be at max 256 characters long')
 
 # Main part of the code that runs when the script is executed
 if __name__ == '__main__':
@@ -125,6 +82,6 @@ if __name__ == '__main__':
     
     # This try-except block will handle errors if validation fails
     # try:
-    #     schema.validate_typed('Aut')  # This will fail because it's too short
+    #     schema.validate_type('Aut')  # This will fail because it's too short
     # except ValidationError as e:
     #     logger.error(f'An error has occurred: {e}')  # Log the error if something goes wrong

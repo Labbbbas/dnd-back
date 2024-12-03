@@ -20,23 +20,15 @@ class BossService:
 
     def add_boss(self, new_boss):
         try:
-            # Try to get the highest ID in the collection
+            # Find the boss with the highest ID and set the new boss ID to be the next one
             max_boss = self.db_conn.db.bosses.find_one(sort=[('_id', -1)])
-            # If a boss exists, increment its ID by 1; otherwise, start from 1
             next_id = max_boss['_id'] + 1 if max_boss else 1
-            # Assign the new ID to the boss
-            new_boss['_id'] = next_id  
-            # Insert the new boss into the database
-            self.db_conn.db.bosses.insert_one(new_boss)
-            
-            # Return the newly added boss
-            return new_boss
-    
+            new_boss['_id'] = next_id  # Assign new ID to the boss
+            self.db_conn.db.bosses.insert_one(new_boss)  # Add the new boss to the database
+            return new_boss  # Return the newly added boss
         except Exception as e:
             # If something goes wrong, log the error and return an error message
             self.logger.error(f'Error creating the new boss: {e}')
-            
-            # Return a 500 error response with the error message
             return jsonify({'error': f'Error creating the new boss: {e}'}), 500
 
     def get_boss_by_id(self, boss_id):
@@ -62,7 +54,7 @@ class BossService:
                 else:
                     return 'The boss is already up-to-date'  # No changes made
             else:
-                return None  # Boss not found
+                return None  # boss not found
             
         except Exception as e:
             # If something goes wrong, log the error and return an error message
@@ -79,7 +71,7 @@ class BossService:
                 self.db_conn.db.bosses.delete_one({'_id': boss_id})
                 return deleted_boss  # Return the deleted boss data
             else:
-                return None  # Boss not found
+                return None  # boss not found
             
         except Exception as e:
             # If something goes wrong, log the error and return an error message
@@ -97,7 +89,7 @@ if __name__ == '__main__':
     try:
         db_conn.connect_to_database()  # Connect to the database
         
-        # Fetch all bosses and log the result
+        # Fetch all bosss and log the result
         bosses = boss_service.get_all_bosses()
         logger.info(f'Bosses fetched: {bosses}')
         
@@ -112,11 +104,11 @@ if __name__ == '__main__':
         
         # Update a boss
         # updated_boss = boss_service.update_boss(6, {'author': 'H.P. Lovecraft'})
-        # logger.info(f'Updated Boss: {updated_boss}')
+        # logger.info(f'Updated boss: {updated_boss}')
         
         # Delete a boss
         # deleted_boss = boss_service.delete_boss(6)
-        # logger.info(f'Deleted Boss: {deleted_boss}')
+        # logger.info(f'Deleted boss: {deleted_boss}')
         
     except Exception as e:
         # If something goes wrong, log the error
