@@ -97,7 +97,9 @@ class CampaignRoutes(Blueprint):
                 'description': description,
                 'dm': dm,
                 'status': status,
-                'pc': pc,
+                "pc": [
+                    {"characterName": char.strip()} for char in (pc if isinstance(pc, list) else pc.split(", "))
+                ],
                 'startDate': startDate,
                 'endDate': endDate,
                 'ql': ql,

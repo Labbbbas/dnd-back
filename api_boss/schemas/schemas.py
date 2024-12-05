@@ -29,6 +29,10 @@ class BossSchema:
     def validate_picture(self, value):
         if len(value) < 5:
             raise ValidationError('Picture URL is too short')
+        # Check if the picture is a valid URL
+        url_pattern = re.compile(r'^(https?://[^\s/$.?#].[^\s]*|data:[\w+/]+;base64,[^\s]+)$')
+        if not url_pattern.match(value):
+            raise ValidationError('Picture must be a valid URL.')
 
     # Validate the hit die: Make sure it's at least 2 characters long
     @validates('cr')
