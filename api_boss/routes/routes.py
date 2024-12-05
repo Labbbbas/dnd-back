@@ -21,12 +21,49 @@ class BossRoutes(Blueprint):
         self.route('/healthcheck', methods=['GET'])(self.healthcheck)
 
     @swag_from({
-        'tags': ['Bosses'],  # API Documentation: Shows this route is for bosses
+        'tags': ['Bosses'],
+        'parameters': [],  # No necesitas un cuerpo en la solicitud GET
+        'responses': {
+            200: {'description': 'List of bosses'},
+            400: {'description': 'Invalid data'},
+            500: {'description': 'Internal server error'}
+        }
+    })
+    def get_bosses(self):
+        # Get all bosses from the database
+        bosses = self.boss_service.get_all_bosses()
+        return jsonify(bosses), 200  # Return the list of bosses as JSON
+    
+    
+    @swag_from({
+        'tags': ['Bosses'],
+        'summary': 'Add a new boss',
+        'description': 'This endpoint allows you to add a new boss to the database. The request body should include all the necessary details about the boss.',
         'parameters': [
             {
                 'name': 'body',
                 'in': 'body',
                 'required': True,
+                'schema': {
+                    'type': 'object',
+                    'properties': {
+                        'named': {'type': 'string', 'description': 'Name of the boss'},
+                        'typed': {'type': 'string', 'description': 'Type or classification of the boss'},
+                        'picture': {'type': 'string', 'description': 'URL or path to the boss picture'},
+                        'cr': {'type': 'string', 'description': 'Challenge rating of the boss'},
+                        'hp': {'type': 'string', 'description': 'Hit points of the boss'},
+                        'ac': {'type': 'string', 'description': 'Armor class of the boss'},
+                        'resistances': {'type': 'string', 'description': 'Resistances of the boss'},
+                        'immunities': {'type': 'string', 'description': 'Immunities of the boss'},
+                        'abilities': {'type': 'string', 'description': 'Abilities of the boss'},
+                    },
+                    'required': ['named', 'typed', 'picture', 'cr', 'hp', 'ac', 'resistances', 'immunities', 'abilities']
+                }
+            }
+        ],
+        'responses': {
+            201: {
+                'description': 'Boss successfully created',
                 'schema': {
                     'type': 'object',
                     'properties': {
@@ -38,23 +75,18 @@ class BossRoutes(Blueprint):
                         'ac': {'type': 'string'},
                         'resistances': {'type': 'string'},
                         'immunities': {'type': 'string'},
-                        'abilities': {'type': 'string'}
-                    },
-                    'required': ['named', 'typed', 'picture', 'cr', 'hp', 'ac', 'resistances', 'immunities', 'abilities']  # These fields are required
+                        'abilities': {'type': 'string'},
+                    }
                 }
+            },
+            400: {
+                'description': 'Invalid or missing data in the request body'
+            },
+            500: {
+                'description': 'Internal server error'
             }
-        ],
-        'responses': {
-            200: {'description': 'Boss successfully created'},
-            400: {'description': 'Invalid data'},
-            500: {'description': 'Internal server error'}
         }
     })
-    def get_bosses(self):
-        # Get all bosses from the database
-        bosses = self.boss_service.get_all_bosses()
-        return jsonify(bosses), 200  # Return the list of bosses as JSON
-    
     def add_bosses(self):
         # Add a new boss
         try:
@@ -106,6 +138,7 @@ class BossRoutes(Blueprint):
         except Exception as e:
             self.logger.error(f'Error adding a new boss to the database: {e}')
             return jsonify({'error': f'An error has occurred: {e}'}), 500  # Handle any errors
+
 
     def update_boss(self, boss_id):
         # Update an existing boss
