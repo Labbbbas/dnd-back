@@ -21,9 +21,9 @@ class CampaignService:
     def add_campaign(self, new_campaign):
         try:
             # Try to get the highest ID in the collection
-            max_campaigns = self.db_conn.db.campaigns.find_one(sort=[('_id', -1)])
+            max_campaign = self.db_conn.db.campaigns.find_one(sort=[('_id', -1)])
             # If a campaign exists, increment its ID by 1; otherwise, start from 1
-            next_id = max_campaigns['_id'] + 1 if max_campaigns else 1
+            next_id = max_campaign['_id'] + 1 if max_campaign else 1
             # Assign the new ID to the campaign
             new_campaign['_id'] = next_id  
             # Insert the new campaign into the database
@@ -103,7 +103,7 @@ if __name__ == '__main__':
         
         # Example operations (currently commented out):
         # Add a new campaign
-        # new_campaign = campaign_service.add_campaign({'name': 'FirstCampaign'})
+        # new_campaign = campaign_service.add_campaign({'role': 'Nahual'})
         # logger.info(f'New campaign added: {new_campaign}')
         
         # Get a campaign by its ID
@@ -112,11 +112,11 @@ if __name__ == '__main__':
         
         # Update a campaign
         # updated_campaign = campaign_service.update_campaign(6, {'author': 'H.P. Lovecraft'})
-        # logger.info(f'Updated campaign: {updated_campaign}')
+        # logger.info(f'Updated Campaign: {updated_campaign}')
         
         # Delete a campaign
         # deleted_campaign = campaign_service.delete_campaign(6)
-        # logger.info(f'Deleted campaign: {deleted_campaign}')
+        # logger.info(f'Deleted Campaign: {deleted_campaign}')
         
     except Exception as e:
         # If something goes wrong, log the error
