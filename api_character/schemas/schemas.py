@@ -119,7 +119,7 @@ class CharacterSchema:
             raise ValidationError('Picture is required.')
         
         # Check if the picture is a valid URL
-        url_pattern = re.compile(r'https?://\\s+')
+        url_pattern = re.compile(r'https?://[^\s/$.?#].[^\s]*')
         if not url_pattern.match(value):
             raise ValidationError('Picture must be a valid URL.')
 
