@@ -4,7 +4,7 @@ from flask import Flask
 from models.models import CampaignModel  # Import the model to interact with the database
 from services.services import CampaignService  # Import the service to handle business logic
 from schemas.schemas import CampaignSchema  # Import the schema for data validation
-from routes.routes import CampaignsRoutes  # Import the routes to manage the API endpoints
+from routes.routes import CampaignRoutes  # Import the routes to manage the API endpoints
 from flasgger import Swagger  # Import Swagger for API documentation
 
 from flask_cors import CORS  # Import CORS to handle cross-origin requests
@@ -27,7 +27,7 @@ campaign_service = CampaignService(db_conn)
 campaign_schema = CampaignSchema()
 
 # Initialize the routes for the API and register them
-campaign_routes = CampaignsRoutes(campaign_service, campaign_schema)
+campaign_routes = CampaignRoutes(campaign_service, campaign_schema)
 app.register_blueprint(campaign_routes)  # Register the routes with the Flask app
 
 # Start the Flask app

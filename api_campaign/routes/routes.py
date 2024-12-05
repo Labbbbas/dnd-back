@@ -86,7 +86,7 @@ class CampaignRoutes(Blueprint):
                 self.campaign_schema.validate_status(status)
                 self.campaign_schema.validate_pc(pc)
                 self.campaign_schema.validate_startDate(startDate)
-                self.campaign_schema.validate_endDate(endDate)
+                self.campaign_schema.validate_endDate(endDate, startDate)
                 self.campaign_schema.validate_ql(ql)
             except ValidationError as e:
                 return jsonify({'error': f'Invalid data: {e}'}), 400  # Return error if validation fails
@@ -172,7 +172,7 @@ class CampaignRoutes(Blueprint):
                 self.campaign_schema.validate_status(status)
                 self.campaign_schema.validate_pc(pc)
                 self.campaign_schema.validate_startDate(startDate)
-                self.campaign_schema.validate_endDate(endDate)
+                self.campaign_schema.validate_endDate(endDate, startDate)
                 self.campaign_schema.validate_ql(ql)
             except ValidationError as e:
                 return jsonify({'error': f'Invalid data: {e}'}), 400  # Return error if validation fails

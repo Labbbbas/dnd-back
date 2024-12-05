@@ -58,7 +58,7 @@ class CampaignSchema:
         if not value:
             raise ValidationError('Campaign Status is required.')
         # Check if status is different from the options: pending, ongoing, finished
-        if value not in ['pending', 'ongoing', 'finished']:
+        if value not in ['paused', 'ongoing', 'completed']:
             raise ValidationError('Campaign Status must be one of the following: pending, ongoing, finished.')
         
     @validates('pc')
@@ -72,18 +72,15 @@ class CampaignSchema:
         # Check if the field is empty
         if not value:
             raise ValidationError('Start Date is required.')
-        # Check if the value is a valid date
-        if not re.match('^\d{2}-\d{2}-\d{4}$', value):
-            raise ValidationError('Start Date must be in the format MM-DD-YYYY.')
+
+        
+        
     
     @validates('endDate')
     def validate_endDate(self, value, startDate):
         # Check if the field is empty
         if not value:
             raise ValidationError('End Date is required.')
-        # Check if the value is a valid date
-        if not re.match('^\d{2}-\d{2}-\d{4}$', value):
-            raise ValidationError('End Date must be in the format MM-DD-YYYY.')
         # Check if the end date is after the start date
         if value < startDate:
             raise ValidationError('End Date must be after the Start Date.')
@@ -91,7 +88,7 @@ class CampaignSchema:
     @validates('ql')
     def validate_ql(self, value):
         # Check if the length is no more than 500 characters
-        elif len(value) > 500:
+        if len(value) > 500:
             raise ValidationError('Quest Log must be no longer than 500 characters.')
         # Check if the value contains only letters, spaces, and common punctuation (, . ' -)
         if value and not re.match('^[A-Za-z\\s,.\'-]+$', value):
