@@ -58,7 +58,7 @@ class CampaignSchema:
         if not value:
             raise ValidationError('Campaign Status is required.')
         # Check if status is different from the options: pending, ongoing, finished
-        if value not in ['paused', 'ongoing', 'completed']:
+        if value not in ['pending', 'ongoing', 'finished']:
             raise ValidationError('Campaign Status must be one of the following: pending, ongoing, finished.')
         
     @validates('pc')
